@@ -1,0 +1,129 @@
+task hello << {
+println 'hello gradle'}
+
+task upper << {
+	String str = 'DAT do'
+	println 'Original:' + str
+	println 'UPPER:' + str.toUpperCase()
+	println project.buildDir
+}
+
+// --------------- Define task
+String taskName = 'myTask'
+
+task(taskName) << {
+	println 'create task with variable'
+}
+
+tasks.create(name:'task1') << {
+	println "task 1"
+}
+
+task newTask
+
+// --------------- get task name
+println newTask.name
+println project.newTask.name
+
+println tasks.newTask.name
+println project.tasks['newTask'].name
+
+println project.name
+
+// --------------- Access task from any project TODO
+// using task path
+// project(':projectA') {
+// 	task hello
+//  }
+// task 
+println tasks.getByPath('hello').path
+println tasks.getByPath(':hello').path
+// println tasks.getByPath('projectA:hello').path
+
+
+println '--------------- Task dependency ------------------'
+task taskX << {
+	println 'task X'
+}
+
+// Sol 1: (Not work in Gradle 4.10 ==> why - TODO)
+//task taskY(dependsOn:'taskX') {
+//	println 'task Y'
+//}
+
+// Option 2:
+task taskY << {
+	println 'task Y'}
+
+taskY.dependsOn taskX
+
+// Option 3: Using closures - TODO
+
+
+println '--------------- Task description ------------------'
+task copy(type: Copy) {
+   description 'Copies the resource directory to the target directory.'
+   from 'resources'
+   into 'target'
+   include('**/*.txt', '**/*.xml', '**/*.properties')
+   println("description applied")
+}
+
+
+// TODO: not understand 
+println '--------------- Skipping Task ------------------'
+task eclipse << {
+   println 'Hello Eclipse'
+}
+
+// #1st approach - closure returning true, if the task should be executed, false if not.
+eclipse.onlyIf {
+   project.hasProperty('usingEclipse')
+}
+
+// #2nd approach - alternatively throw an StopExecutionException() like this
+eclipse.doFirst {
+   if(!usingEclipse) {
+	println 'Not using eclipse'
+      throw new StopExecutionException()
+   }
+}
+
+
+println '--------------- Dependencies management ------------------'
+apply plugin: 'java'
+
+repositories {
+   mavenCentral()
+}
+
+// Option 2: This can be used for local/internal repo
+//repositories {
+//   maven {
+//	url "some_url"}
+//}
+
+dependencies {
+   compile group: 'org.hibernate', name: 'hibernate-core', version: '3.6.7.Final'
+   testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+// compile, runtime, testCompile, testRuntime
+
+
+// Publishing Artifacts
+apply plugin: 'maven'
+
+uploadArchives {
+   repositories {
+      mavenDeployer {
+         repository(url: "file://localhost/tmp/myRepo/")
+      }
+   }
+}
+
+println '--------------- Plugin ------------------'
+// TODO
+
+println '--------------- Running a build ------------------'
+

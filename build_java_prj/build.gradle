@@ -1,0 +1,36 @@
+// This is required to build java prj
+// This plugin provides tasks to build src code, javadocs, create jar file
+// The plugin assumes the structure of prj should be:
+// - src/main/java
+// - src/test/java
+apply plugin: 'java'
+
+// build command
+// gradle build
+// or 
+// gradle -b <path_to_sub_prj_script_file> build
+// Eg. gradle -b build_java_prj/build.gradle build
+
+
+// sourceSets to custom the project structure
+// Eg. 
+//sourceSets {
+//    main {
+//    	java {
+//    		srcDir 'src'
+//    	}
+//    }
+//
+//    test {
+//    	java {
+//    		srcDir 'test'
+//    	    }
+//    	}
+//    }
+
+// Generate project structure
+// Option 1:
+// gradle init
+
+// Option 2: for java prj
+// gradle init --type=java-library
